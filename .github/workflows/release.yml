@@ -44,16 +44,16 @@ jobs:
           git commit -a -m "🏁 Releasing version $VERSION"
           git push origin HEAD:master
 
-      - name: Release to Maven Central
+      - name: 'Release to Maven Central'
         env:
-          MAVEN_USERNAME: ${{ secrets.SONATYPE_USERNAME }}
-          MAVEN_CENTRAL_TOKEN: ${{ secrets.SONATYPE_PASSWORD }}
+          MAVEN_USERNAME: ${{ secrets.PUBLISHER_PORTAL_USERNAME }}
+          MAVEN_CENTRAL_TOKEN: ${{ secrets.PUBLISHER_PORTAL_TOKEN }}
           MAVEN_GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
         run: |
           export GPG_TTY=$(tty)
           ./mvnw --no-transfer-progress -B --file pom.xml \
             -Drepository.url=https://${{ github.actor }}:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git \
-            -Dmaven.site.skip=true -Drelease=true deploy
+            -Dmaven.site.skip=true -Drelease=true deploy  -s ./settings.xml
 
       - name: Release to GitHub
         env:
